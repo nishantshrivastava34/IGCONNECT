@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}
+Login
+{% endblock %}
+
+
+{% block content %}
+<h1>{{ question.question_text }}</h1>
+UPVOTES : {{questtion.upvotes}} DOWNVOTES : {{question.downvotes}}  PUBLISHED ON {{question.pub_time}} <br>
+<strong>SHOW COMMENTS ON QUESTION HERE</strong>
+{% if question.qcomment_set.all %}
+		
+		<ul>
+		{% for qcomment in question.qcomment_set.all %}
+		<li>{{forloop.counter}}){{qcomment.qcomment_text}}</li>
+		{% endfor %}
+		</ul>
+		
+{% else %}
+<p>no comments</p>
+{% endif %}
+
+
+
+
+<strong>COMMENT BOX</strong>
+<form action = "{% url 'forum:detail' question.id %}"  method = "post"  >
+{% csrf_token %}
+<textarea name = "ques_comm_text" >
+</textarea><br>
+<input type = 'submit' value="Submit" name = "quesCommPost" >
+</form>
+
+
+
+
+<strong>Answers LIST</strong>
+	{% if question.answer_set.all %}
+	<ul>
+	{% for ans in answer_dict %}
+		<li>{{forloop.counter}})&nbsp&nbsp{{ans.answer_text}}</li>
+		<p>upvotes:{{ans.upvotes}}  downvotes:{{ans.downvotes}}   published on :{{ans.answer_time}}</p>
+
+							{% if ans.acomment_set.all %}
+		
+							<ul>
+
+							{% for acomment in ans.acomment_set.all %}
+							<li>{{forloop.counter}}&nbsp &nbsp{{acomment.acomment_text}}</li>
+							
+							{% endfor %}
+
+
+							</ul>
+
+		
+       						{% else %}
+
+       						<p>no comments</p>
+       						<form action = "{% url 'forum:detail' question.id %}"  method = "post"  >
+							{% csrf_token %}
+							<textarea name = "ans_comm_text" >
+							</textarea>
+							<input type = 'submit' value="Submit" name= "ansCommPost">
+							</form>
+
+  							{% endif %}
+
+
+			{% endfor%}
+	</ul>
+
+		{% else %}
+		<h2>No ANswers yet</h2>
+		{% endif %}
+
+
+
+
+
+
+
+<h4>Final Answer</h4>
+<form action = "{% url 'forum:detail' question.id %}"  method = "post"  >
+{% csrf_token %}
+<textarea name = "ans_text" >
+</textarea><br>
+<input type = 'submit' name = "action" value="answerPost" >
+</form>
+
+{% endblock %}
